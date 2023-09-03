@@ -1,11 +1,13 @@
 #zaloguj się co chcesz zrobić (obsługa kasy(sprzedaż), zmiana cen, dodanie do magazynu, inwentaryzacja, rozliczenie (przychody, dochody, wydatki), typy klientów)
 
+magazyn_cena={'Banany': 5, 'Jabłka': 4, 'Winogron': 15}
+magazyn_stan={}
+
 def spis_cen():
-    print(f"""
-          Banany- 5zł/kg
-          Jabłka- 4zł/kg
-          Winogron- 15zł/kg
-          """)
+    print('\n-------------')
+    for i in magazyn_cena:
+        print(f'{i} - {magazyn_cena[i]}/kg')
+    print('-------------\n')
 
 def kasa():
     while True:
@@ -15,14 +17,53 @@ def kasa():
         else:
             break
     while True:
-        cena=input('Wprowadź cenę za kg: ')
+        cena=input('Wprowadź cenę za kg, jeżeli nie pamiętasz ceny wpisz ponownie cennik: ')
         if cena.isdigit()==False:
             print('Wprowadź poprawną cenę produktu')
+        if cena=='cennik':
+            spis_cen()
         else:
             break
     print(f'Do zapłaty {int(kg)*int(cena)}zł')
     print('Dziękuję, do widzenia')
+    exit()
+
+def mag_cena():
+    spis_cen()
+    while True:
+        produkt=input('Podaj nazwę produktu, którego cenę chcesz zmienić: ')
+        if produkt not in magazyn_cena:
+            print('Nie ma takiego produktu, wpisz ponownie')
+            print(spis_cen())
+        else:
+            break
+    while True:
+        cena=input('Podaj cenę produktu za którą chcesz sprzedawać: ')
+        if cena.isdigit()==False:
+            print('Podaj kwotę za kg')
+        else:
+            break
+
+    magazyn_cena[produkt]=int(cena)
+    print(f'Zmieniono cenę {produkt} na {magazyn_cena[produkt]}zł')
+    spis_cen()
+    magazyn()
     
+def magazyn():
+    print('Wybierz działanie: zmiana cen, stan towaru, dostawa, powrót')
+    while True:
+        mag=input()
+        if mag=='zmiana cen':
+            mag_cena()
+        elif mag=='stan towaru':
+            exit()
+        elif mag=='dostawa':
+            exit()
+        elif mag=='powrót':
+            menu()
+        else:
+            print('Błędne dane, wpisz ponownie')
+       
 def klient():
     from random import randint
     towar=['bananów', 'jabłek', 'winogron']
@@ -46,14 +87,20 @@ def logowanie_kasa():
     print('Jesteś gotowy na przyjęcie pierwszego klienta')
     klient()
 
-while True:
-    menu=input('Wybierz co chcesz zrobić. Zalogować do kasa, magazyn, inwentaryzacja, rozliczenie: ')
-    if menu =='kasa':
-        print('Poprawne logowanie')
-        logowanie_kasa()
-        break
-    elif menu =='magazyn' or menu =='inwentaryzacja' or menu =='rozliczenie':
-        print('Wkrótce dostępne')
-    else:
-        print('Błędne dane, proszę powtórnie wybrać profil')
+def menu():
+    while True:
+        menu=input('Wybierz co chcesz zrobić. Zalogować do kasa, magazyn, inwentaryzacja, rozliczenie: ')
+        if menu =='kasa':
+            print('Poprawne logowanie do kasa')
+            logowanie_kasa()
+            break
+        elif menu =='magazyn':
+            print('Poprawne logowanie do magazyn')
+            magazyn()
+            break
+        elif menu =='inwentaryzacja' or menu =='rozliczenie':
+            print('Wkrótce dostępne')
+        else:
+            print('Błędne dane, proszę powtórnie wybrać profil')
         
+menu()
