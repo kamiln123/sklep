@@ -1,4 +1,5 @@
 #zaloguj się co chcesz zrobić (obsługa kasy(sprzedaż), zmiana cen, dodanie do magazynu, inwentaryzacja, rozliczenie (przychody, dochody, wydatki), typy klientów)
+#zmienić w inputach capitalize lower itd.
 
 magazyn_cena={'Banany': 5, 'Jabłka': 4, 'Winogron': 15}
 magazyn_stan={}
@@ -50,15 +51,15 @@ def mag_cena():
     magazyn()
     
 def magazyn():
-    print('Wybierz działanie: zmiana cen, stan towaru, dostawa, powrót')
     while True:
+        print('Wybierz działanie: zmiana cen, stan towaru, dostawa, powrót')
         mag=input()
         if mag=='zmiana cen':
             mag_cena()
         elif mag=='stan towaru':
-            exit()
+            print('Wkrótce dostępne')
         elif mag=='dostawa':
-            exit()
+            print('Wkrótce dostępne')
         elif mag=='powrót':
             menu()
         else:
