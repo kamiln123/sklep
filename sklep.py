@@ -2,12 +2,20 @@
 #zmienić w inputach capitalize lower itd.
 
 magazyn_cena={'Banany': 5, 'Jabłka': 4, 'Winogron': 15}
-magazyn_stan={}
+magazyn_stan={'Banany':2, 'Jabłka': 5, 'Winogron': 0}
+towar=['Banany', 'Jabłka', 'Winogron']
+przychód=0
 
 def spis_cen():
     print('\n-------------')
     for i in magazyn_cena:
-        print(f'{i} - {magazyn_cena[i]}/kg')
+        print(f'{i} - {magazyn_cena[i]} zł/kg')
+    print('-------------\n')
+
+def spis_stan():
+    print('\n-------------')
+    for i in magazyn_stan:
+        print(f'{i} - {magazyn_stan[i]} kg')
     print('-------------\n')
 
 def kasa():
@@ -19,15 +27,16 @@ def kasa():
             break
     while True:
         cena=input('Wprowadź cenę za kg, jeżeli nie pamiętasz ceny wpisz ponownie cennik: ')
-        if cena.isdigit()==False:
-            print('Wprowadź poprawną cenę produktu')
         if cena=='cennik':
             spis_cen()
+        elif cena.isdigit()==False:
+            print('Wprowadź poprawną cenę produktu')
         else:
             break
-    print(f'Do zapłaty {int(kg)*int(cena)}zł')
-    print('Dziękuję, do widzenia')
-    exit()
+    print(f'Sprzedawca: Do zapłaty {int(kg)*int(cena)}zł')
+    print('Klient: Dziękuję, do widzenia')
+    print('Sprzedawca: Do widzenia')
+    menu()
 
 def mag_cena():
     spis_cen()
@@ -35,7 +44,7 @@ def mag_cena():
         produkt=input('Podaj nazwę produktu, którego cenę chcesz zmienić: ')
         if produkt not in magazyn_cena:
             print('Nie ma takiego produktu, wpisz ponownie')
-            print(spis_cen())
+            spis_cen()
         else:
             break
     while True:
@@ -46,10 +55,81 @@ def mag_cena():
             break
 
     magazyn_cena[produkt]=int(cena)
-    print(f'Zmieniono cenę {produkt} na {magazyn_cena[produkt]}zł')
+    print(f'Zmieniono cenę {produkt} na {magazyn_cena[produkt]} zł/kg')
     spis_cen()
     magazyn()
     
+def mag_stan():
+    while True:
+        stan=input('Jeżeli produkt jest już na stanie wpisz zwiększ, aby zwiększyć ilość lub dodaj, aby dodać nowy produkt, aby zakończyć wpisz zakończ: ')
+        if stan=='zakończ':
+            magazyn()
+        elif stan=='zwiększ':
+            mag_zwiększ()
+        elif stan=='dodaj':
+            mag_dodaj()
+        else:
+            print('Błąd, wybierz ponownie z listy!')
+
+def mag_zamknij():
+    while True:
+        zamknij=input('Jeżeli chcesz kontynuować dostawę wpisz kontynuuj, aby zakończyć dostawę wpisz zakończ: ')
+        if zamknij=='kontynuuj':
+            mag_stan()
+        elif zamknij=='zakończ':
+            print('Zakończono dostawę')
+            magazyn()
+        else:
+            print('Błąd, wpisz ponownie')
+            
+
+def mag_zwiększ():
+    while True:
+        produkt=input('Wybierz produkt, którego ilość chcesz zwiększyć: ')
+        if produkt in magazyn_stan:
+            while True:
+                zwiększ=input('Podaj, ilość towaru, którą chcesz dodać: ')
+                if zwiększ.isdigit()==True:
+                    magazyn_stan[produkt]=magazyn_stan[produkt]+int(zwiększ)
+                    print('Prawidłowe dodanie do magazynu')
+                    print(f'Zmieniono stan {produkt} na {magazyn_stan[produkt]} kg')
+                    mag_zamknij()
+                else:
+                    print('Podaj ilość w kg')
+        elif produkt not in magazyn_stan:
+            print('Produktu nie ma jeszcze na stanie, jeżeli chcesz go dodać przejdź do dodaj lub sprawdź ponownie stan')
+            spis_stan()
+            print('Wpisz ponownie co chcesz zrobić')
+            mag_stan()
+                    
+    
+def mag_dodaj():
+    while True:
+        produkt=input('Wpisz nazwę produktu który chcesz dodać: ')
+        if produkt in magazyn_stan:
+            print('Produkt już znajduje się w magazynie')
+            mag_stan()
+        else:
+            break
+    while True:
+        cena=input('Podaj cenę za 1 kg: ')
+        if cena.isdigit()==False:
+            print('Cena musi być liczbą')
+        else:
+            break
+    while True:
+        ilość=input('Podaj ilość kg, które chcesz dodać: ')
+        if ilość.isdigit()==False:
+            print('Podaj liczbę w kg')
+        else:
+            break
+    magazyn_cena[produkt]=int(cena)
+    magazyn_stan[produkt]=int(ilość)
+    towar.append(produkt)
+    print(f'Pomyślnie dodano {produkt}, po cenie {magazyn_cena[produkt]} zł/kg w ilości {magazyn_stan[produkt]} kg')
+    mag_zamknij()
+        
+
 def magazyn():
     while True:
         print('Wybierz działanie: zmiana cen, stan towaru, dostawa, powrót')
@@ -57,9 +137,11 @@ def magazyn():
         if mag=='zmiana cen':
             mag_cena()
         elif mag=='stan towaru':
-            print('Wkrótce dostępne')
+            spis_stan()
         elif mag=='dostawa':
-            print('Wkrótce dostępne')
+            spis_stan()
+            print('Dostawa gotowa do przyjęcia')
+            mag_stan()
         elif mag=='powrót':
             menu()
         else:
@@ -67,15 +149,14 @@ def magazyn():
        
 def klient():
     from random import randint
-    towar=['bananów', 'jabłek', 'winogron']
     print('Oto pierwszy klient')
     print('Klient: Dzień dobry')
     print('Sprzedawca: Dzień dobry, co podać?')
-    print(f'Poproszę {randint(1,10)} kg {towar[randint(0,2)]}')
+    print(f'Klient: Poproszę {randint(1,10)} kg {towar[randint(0,len(towar)-1)]}')
     kasa()
 
 def logowanie_kasa():
-    print('Dzień dobry kasa została podłączona do sieci')
+    print('Dzień dobry, kasa została podłączona do sieci')
     while True:
         cennik=input('Aby poznać cenę towarów wpisz "cennik" lub aby wyjść "wyjście": ')
         if cennik =='cennik':
@@ -90,7 +171,7 @@ def logowanie_kasa():
 
 def menu():
     while True:
-        menu=input('Wybierz co chcesz zrobić. Zalogować do kasa, magazyn, inwentaryzacja, rozliczenie: ')
+        menu=input('Wybierz co chcesz zrobić. Zalogować do kasa, magazyn, inwentaryzacja, rozliczenie lub zamknij, aby zakończyć: ')
         if menu =='kasa':
             print('Poprawne logowanie do kasa')
             logowanie_kasa()
@@ -99,9 +180,15 @@ def menu():
             print('Poprawne logowanie do magazyn')
             magazyn()
             break
-        elif menu =='inwentaryzacja' or menu =='rozliczenie':
-            print('Wkrótce dostępne')
+        elif menu =='inwentaryzacja':
+            spis_stan()
+        elif menu =='rozliczenie':
+            print(f'W kasie znajduje się {przychód} zł')
+        elif menu =='zamknij':
+            print('Wylogowywanie...')
+            exit()
         else:
             print('Błędne dane, proszę powtórnie wybrać profil')
-        
+
+     
 menu()
