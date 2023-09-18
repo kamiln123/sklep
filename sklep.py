@@ -5,6 +5,7 @@ magazyn_cena={'Banany': 5, 'Jabłka': 4, 'Winogron': 15}
 magazyn_stan={'Banany':2, 'Jabłka': 5, 'Winogron': 0}
 towar=['Banany', 'Jabłka', 'Winogron']
 przychód=0
+sprzedane={}
 
 def spis_cen():
     print('\n-------------')
@@ -33,10 +34,41 @@ def kasa():
             print('Wprowadź poprawną cenę produktu')
         else:
             break
-    print(f'Sprzedawca: Do zapłaty {int(kg)*int(cena)}zł')
+    do_zapłaty=int(kg)*int(cena)
+    print(f'Sprzedawca: Do zapłaty {do_zapłaty}zł')
     print('Klient: Dziękuję, do widzenia')
     print('Sprzedawca: Do widzenia')
+    global przychód
+    przychód+=(do_zapłaty)
     menu()
+
+def klient():
+    from random import randint
+    print('Oto pierwszy klient')
+    print('Klient: Dzień dobry')
+    print('Sprzedawca: Dzień dobry, co podać?')
+    waga=randint(1,10)
+    produkt=towar[randint(0,len(towar)-1)]
+    print(f'Klient: Poproszę {waga} kg {produkt}')
+    if produkt in sprzedane:
+        sprzedane[produkt]+=waga
+    else:
+        sprzedane[produkt]=waga
+    kasa()
+
+def logowanie_kasa():
+    print('Dzień dobry, kasa została podłączona do sieci')
+    while True:
+        cennik=input('Aby poznać cenę towarów wpisz "cennik" lub aby wyjść "wyjście": ')
+        if cennik =='cennik':
+            spis_cen()
+            break
+        elif cennik=='wyjście':
+            break
+        else:
+            print('Brak danych, proszę powtórnie wybrać polecenie')
+    print('Jesteś gotowy na przyjęcie pierwszego klienta')
+    klient()
 
 def mag_cena():
     spis_cen()
@@ -53,7 +85,6 @@ def mag_cena():
             print('Podaj kwotę za kg')
         else:
             break
-
     magazyn_cena[produkt]=int(cena)
     print(f'Zmieniono cenę {produkt} na {magazyn_cena[produkt]} zł/kg')
     spis_cen()
@@ -81,7 +112,6 @@ def mag_zamknij():
             magazyn()
         else:
             print('Błąd, wpisz ponownie')
-            
 
 def mag_zwiększ():
     while True:
@@ -102,7 +132,6 @@ def mag_zwiększ():
             print('Wpisz ponownie co chcesz zrobić')
             mag_stan()
                     
-    
 def mag_dodaj():
     while True:
         produkt=input('Wpisz nazwę produktu który chcesz dodać: ')
@@ -129,7 +158,6 @@ def mag_dodaj():
     print(f'Pomyślnie dodano {produkt}, po cenie {magazyn_cena[produkt]} zł/kg w ilości {magazyn_stan[produkt]} kg')
     mag_zamknij()
         
-
 def magazyn():
     while True:
         print('Wybierz działanie: zmiana cen, stan towaru, dostawa, powrót')
@@ -147,28 +175,6 @@ def magazyn():
         else:
             print('Błędne dane, wpisz ponownie')
        
-def klient():
-    from random import randint
-    print('Oto pierwszy klient')
-    print('Klient: Dzień dobry')
-    print('Sprzedawca: Dzień dobry, co podać?')
-    print(f'Klient: Poproszę {randint(1,10)} kg {towar[randint(0,len(towar)-1)]}')
-    kasa()
-
-def logowanie_kasa():
-    print('Dzień dobry, kasa została podłączona do sieci')
-    while True:
-        cennik=input('Aby poznać cenę towarów wpisz "cennik" lub aby wyjść "wyjście": ')
-        if cennik =='cennik':
-            spis_cen()
-            break
-        elif cennik=='wyjście':
-            break
-        else:
-            print('Brak danych, proszę powtórnie wybrać polecenie')
-    print('Jesteś gotowy na przyjęcie pierwszego klienta')
-    klient()
-
 def menu():
     while True:
         menu=input('Wybierz co chcesz zrobić. Zalogować do kasa, magazyn, inwentaryzacja, rozliczenie lub zamknij, aby zakończyć: ')
@@ -183,8 +189,14 @@ def menu():
         elif menu =='inwentaryzacja':
             spis_stan()
         elif menu =='rozliczenie':
-            print(f'W kasie znajduje się {przychód} zł')
+            print('\n-------------')
+            print(f'W kasie jest {przychód}zł')
+            print('Sprzedano:')
+            for i in sprzedane:
+                print(f'{sprzedane[i]} kg {i}')
+            print('-------------\n')
         elif menu =='zamknij':
+            print(f'Dzisiejszy przychód to {przychód}zł')
             print('Wylogowywanie...')
             exit()
         else:
