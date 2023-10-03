@@ -1,6 +1,8 @@
 #zaloguj się co chcesz zrobić (obsługa kasy(sprzedaż), zmiana cen, dodanie do magazynu, inwentaryzacja, rozliczenie (przychody, dochody, wydatki), typy klientów)
 #zmienić w inputach capitalize lower itd.
 
+from random import randint
+
 magazyn_cena={'Banany': 5, 'Jabłka': 4, 'Winogron': 15}
 magazyn_stan={'Banany':2, 'Jabłka': 5, 'Winogron': 0}
 towar=['Banany', 'Jabłka', 'Winogron']
@@ -43,16 +45,22 @@ def kasa():
     menu()
 
 def klient():
-    from random import randint
     print('Oto pierwszy klient')
     print('Klient: Dzień dobry')
     print('Sprzedawca: Dzień dobry, co podać?')
     waga=randint(1,10)
     produkt=towar[randint(0,len(towar)-1)]
     print(f'Klient: Poproszę {waga} kg {produkt}')
+    if magazyn_stan[produkt]<waga:
+        print('Sprzedawca: Nie posiadamy takiej ilości')
+        print('Klient: Dobrze to dziękuję, do widzenia')
+        print('Sprzedawca: Do widzenia')
+        menu()
     if produkt in sprzedane:
+        magazyn_stan[produkt]-=waga
         sprzedane[produkt]+=waga
     else:
+        magazyn_stan[produkt]-=waga
         sprzedane[produkt]=waga
     kasa()
 
@@ -202,5 +210,4 @@ def menu():
         else:
             print('Błędne dane, proszę powtórnie wybrać profil')
 
-     
 menu()
